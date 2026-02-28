@@ -11,17 +11,28 @@ if (process.env.NODE_ENV !== 'production') {
 import express from 'express';
 import cors from 'cors';
 import { db } from './database/mongodb';
+import basicRouters from './routers/basic-router';
+import bmiRouters from './routers/bmi-router';
+import authRouters from './routers/auth-router';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:1999', 'http://localhost:5173']
-}))
+    origin: [
+        'http://localhost:6661', 
+        'http://localhost:5173'
+    ]
+}));
+app.use('/api/auth', authRouters);
+app.use('/api/basic-calculator', basicRouters);
+app.use('/api/bmi-calculator', bmiRouters);
 
 if (process.env.NODE_ENV !== 'production') {
     db.then(() => {
-        app.listen(1999, () => console.log('api running at http://localhost:1999'))
-    })
+        app.listen(6661, () => console.log('api running at http://localhost:6661'))
+    });
 }
+
+export default app;

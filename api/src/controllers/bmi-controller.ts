@@ -39,7 +39,13 @@ export async function insertNewBmi(req: Request, res: Response) {
     try {
         let decision;
         const result = (weight / ((height / 100) ** 2));
-        res.status(200).json({ message: 'new formula added' });
+
+        if (result >= 30) decision = 'Obesitas';
+        else if (result >= 25 && result <= 29.5) decision = 'Berlebihan';
+        else if (result >= 18.5 && result <= 24.9) decision = 'Normal';
+        else decision = 'Not Normal';
+        
+        res.status(200).json({ height, weight, result, decision });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

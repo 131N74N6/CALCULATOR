@@ -42,7 +42,7 @@ export async function insertNewFormula(req: Request, res: Response) {
         const result = evaluate(formula);
         const newFormula = new Basic({ created_at, formula, result: result.toString(), user_id });
         await newFormula.save();
-        res.status(200).json({ message: 'new formula added' });
+        res.status(200).json({ formula, result });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
     }

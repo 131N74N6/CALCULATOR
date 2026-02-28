@@ -1,24 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import AuthController from "./auth-controller";
-
-export type GetDataIntrf = {
-    api_url: string;
-    query_key: string[];
-    stale_time: number;
-}
-
-export type InfiniteScrollIntrf = {
-    api_url: string;
-    limit: number;
-    query_key: string[];
-    stale_time: number;
-}
-
-export type InsettDataIntrf<Y> = {
-    api_url: string;
-    data: Omit<Y, '_id'>;
-}
+import AuthController from "./authController";
+import type { GetDataIntrf, InfiniteScrollIntrf, InsettDataIntrf } from '../models/dataModel';
 
 export default function DataController() {
     const { loading } = AuthController();
