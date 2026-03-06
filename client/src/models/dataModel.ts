@@ -1,3 +1,8 @@
+export type ChangeDataProps<A> = {
+    api_url: string;
+    data: Partial<Omit<A, '_id'>>;
+}
+
 export type GetDataIntrf = {
     api_url: string;
     query_key: string[];

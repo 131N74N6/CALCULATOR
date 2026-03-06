@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Navbar1 } from "../components/Navbar";
 
 const buttonComponent = [
     '0','1','2','3','4','5','6','7','8',
@@ -7,6 +8,7 @@ const buttonComponent = [
 
 export default function BasicCalculator() {
     const [handleDisplay, setHandleDisplay] = useState<string>('');
+    const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     function operationButton(value: string) {
         if (value === "C") setHandleDisplay("");
@@ -25,7 +27,7 @@ export default function BasicCalculator() {
     }
 
     return (
-        <main className="bg-[url(https://i.postimg.cc/5tjV0z6y/rain-in-autumn.jpg)] flex gap-4 p-4 h-screen relative z-10">
+        <main className={`bg-[url(${import.meta.env.VITE_BACKGROUND_URL})] flex gap-4 p-4 h-screen relative z-10`}>
             <div className="md:w-3/4 w-full flex justify-center items-center">
                 <form onSubmit={executor} className="backdrop-blur-sm backdrop-brightness-50 border w-75 h-105.5 border-white p-4 flex flex-col gap-4">
                     <input 

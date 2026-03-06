@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import useAuth from "../controllers/authController";
+import AuthServices from "../services/authService";
 import type { ReactNode } from "react";
 
 type ProtectedRouteProps = {
@@ -7,13 +7,15 @@ type ProtectedRouteProps = {
 }
 
 export default function ProtectedRoute(props: ProtectedRouteProps) {
-    const { loading, user } = useAuth();
+    const { currentUserId, loading } = AuthServices();
 
-    if (loading) return (
-        <div className="flex justify-center items-center h-screen bg-[#1a1a1a]">
-            <div className="animate-spin rounded w-12 h-12 border-purple-400"></div>
-        </div>
-    );
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen bg-[#1a1a1a]">
+                <div className="animate-spin rounded w-12 h-12 border-white"></div>
+            </div>
+        );
+    }
 
-    return user ? <>{props.children}</> : <Navigate to={'/sign-in'} replace/>
+    return currentUserId ? <>{props.children}</> : <Navigate to={'/sign-in'} replace/>
 }

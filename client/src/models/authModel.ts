@@ -1,7 +1,12 @@
-export type UserIntrf = {
-    status: string;
+export type UserAccessIntrf = {
     token: string;
-    id: string;
+    user_id: string;
+}
+
+export type UserIntrf = {
+    created_at: string;
+    email: string;
+    user_id: string;
     username: string;
 }
 

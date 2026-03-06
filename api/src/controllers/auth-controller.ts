@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Auth } from '../models/auth-model';
+import { Auth } from '../models/user-model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -28,12 +28,12 @@ export async function signIn(req: Request, res: Response) {
         }
 
         const token = jwt.sign(
-            { id: userFound[0]._id, username: userFound[0].username },
-            process.env.JWT_SECRET_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ODE4Y2RlZjFjMjdkZGE3ZDQxMzQ2MyIsInVzZXJuYW1lIjoiYmludGFuZyJ9.2CYKkbNWb3IeEJtv2sMlO3Q1fJIuflYiE60nLDQXc-c'
+            { user_id: userFound[0]._id.toString() },
+            process.env.JWT_SECRET_KEY || 'secret_key'
         );
 
         res.status(200).json({
-            status: 'ok', token: token, id: userFound[0]._id, username: userFound[0].username
+            token: token, user_id: userFound[0]._id
         });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });
@@ -43,7 +43,8 @@ export async function signIn(req: Request, res: Response) {
 export async function signUp(req: Request, res: Response) {
     try {
         const { created_at, email, password, username } = req.body;
-        const userFound = await Auth.find({ username: username });
+        const userFound = await Auth.findOne({ username: username });
+        const findEmail = await Auth.findOne({ email: email });
     
         if (!created_at || !email || !password || !username) {
             return res.status(400).json({ message: 'all fields are required' });
@@ -60,10 +61,15 @@ export async function signUp(req: Request, res: Response) {
         if (userFound) {
             return res.status(400).json({ message: 'this username already exist' });
         }
+        if (findEmail) {
+            return res.status(400).send({ message: 'this email already exist' });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new Auth({ created_at, email, password: hashedPassword, username });
         await newUser.save();
+        
+        res.status(200).json({ message: 'new user added' });
     } catch (error) {
         res.status(500).json({ message: 'internal server error' })
     }

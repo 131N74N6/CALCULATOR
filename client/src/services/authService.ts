@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import type { SignInIntrf, SignUpIntrf, UserIntrf } from "../models/authModel";
+import type { SignInIntrf, SignUpIntrf, UserAccessIntrf } from "../models/authModel";
 import { useNavigate } from "react-router-dom";
 
-export default function AuthController() {
+export default function AuthServices() {
     const navigate = useNavigate();
-    const [loading, setLoading] = useState<boolean>(false);
-    const [user, setUser] = useState<UserIntrf | null>(null);
+    const [authLoading, setAuthLoading] = useState<boolean>(false);
+    const [authUser, setAuthUser] = useState<UserAccessIntrf | null>(null);
     const [authError, setAuthError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -14,12 +14,13 @@ export default function AuthController() {
                 const userExist = localStorage.getItem('user');
                 if (userExist) {
                     const parsedUser = JSON.parse(userExist);
-                    setUser(parsedUser);
+                    setAuthUser(parsedUser);
                 }
             } catch (err) {
                 localStorage.removeItem('user');
+                setAuthUser(null);
             } finally {
-                setLoading(false); 
+                setAuthLoading(false); 
             }
         };
 
@@ -27,7 +28,7 @@ export default function AuthController() {
     }, []);
 
     async function signIn(props: SignInIntrf) {
-        setLoading(true);
+        setAuthLoading(true);
         setAuthError(null);
 
         try {
@@ -43,26 +44,20 @@ export default function AuthController() {
                 const errorMessage = response.error || response.message || 'Failed to sign-in! Try again later';
                 setAuthError(errorMessage);
             } else {
-                const currentUser = { 
-                    status: response.status, 
-                    token: response.status, 
-                    id: response.status, 
-                    username: response.status
-                }
+                const currentUser = { token: response.token, user_id: response.user_id }
 
-                setAuthError(null);
                 localStorage.setItem('user', JSON.stringify(currentUser));
-                setUser(currentUser);
+                setAuthError(null);
             }
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
         } finally {
-            setLoading(false);
+            setAuthLoading(false);
         }
     }
 
     async function signUp(props: SignUpIntrf) {
-        setLoading(true);
+        setAuthLoading(true);
         setAuthError(null);
 
         try {
@@ -84,23 +79,28 @@ export default function AuthController() {
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
         } finally {
-            setLoading(false);
+            setAuthLoading(false);
         }
     }
 
     function signOut() {
-        setLoading(true);
+        setAuthLoading(true);
+        setAuthError(null);
 
         try {
             setAuthError(null);
-            setUser(null);
+            setAuthUser(null);
             localStorage.removeItem('user');
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
         } finally {
-            setLoading(false);
+            setAuthLoading(false);
         }
     }
 
-    return { authError, loading, user, setAuthError, signIn, signOut, signUp }
+    return { 
+        currentUserId: authUser ? authUser.user_id : '',
+        token: authUser ? authUser.token : '' ,
+        authError, authLoading, setAuthError, signIn, signOut, signUp, 
+    }
 }

@@ -14,20 +14,19 @@ import { db } from './database/mongodb';
 import basicRouters from './routers/basic-router';
 import bmiRouters from './routers/bmi-router';
 import authRouters from './routers/auth-router';
+import userRoutes from './routers/user.router';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: [
-        'http://localhost:6661', 
-        'http://localhost:5173'
-    ]
+    origin: ['http://localhost:6661', 'http://localhost:5173']
 }));
 app.use('/api/auth', authRouters);
 app.use('/api/basic-calculator', basicRouters);
 app.use('/api/bmi-calculator', bmiRouters);
+app.use('/api/user', userRoutes);
 
 if (process.env.NODE_ENV !== 'production') {
     db.then(() => {
