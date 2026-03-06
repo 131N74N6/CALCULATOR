@@ -13,6 +13,7 @@ export type UserIntrf = {
 export type SignInIntrf = {
     password: string;
     username: string;
+    navigate_to: (path: string) => void;
 }
 
 export type SignUpIntrf = {
@@ -20,4 +21,5 @@ export type SignUpIntrf = {
     email: string;
     password: string;
     username: string;
+    navigate_to: (path: string) => void;
 }

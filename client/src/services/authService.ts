@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import type { SignInIntrf, SignUpIntrf, UserAccessIntrf } from "../models/authModel";
-import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AuthServices() {
-    const navigate = useNavigate();
     const [authLoading, setAuthLoading] = useState<boolean>(false);
     const [authUser, setAuthUser] = useState<UserAccessIntrf | null>(null);
     const [authError, setAuthError] = useState<string | null>(null);
+
+    const currentUserId = authUser ? authUser.user_id : '';
+    const currentUserToken = authUser ? authUser.token : '';
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         function initAuth() {
@@ -45,9 +48,9 @@ export default function AuthServices() {
                 setAuthError(errorMessage);
             } else {
                 const currentUser = { token: response.token, user_id: response.user_id }
-
                 localStorage.setItem('user', JSON.stringify(currentUser));
                 setAuthError(null);
+                props.navigate_to('/basic-calculator');
             }
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
@@ -74,7 +77,7 @@ export default function AuthServices() {
                 setAuthError(errorMessage);
             } else {
                 setAuthError(null);
-                navigate('/sign-in');
+                props.navigate_to('/basic-calculator');
             }
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
@@ -91,6 +94,7 @@ export default function AuthServices() {
             setAuthError(null);
             setAuthUser(null);
             localStorage.removeItem('user');
+            queryClient.removeQueries()
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
         } finally {
@@ -99,8 +103,7 @@ export default function AuthServices() {
     }
 
     return { 
-        currentUserId: authUser ? authUser.user_id : '',
-        token: authUser ? authUser.token : '' ,
+        currentUserId, currentUserToken,
         authError, authLoading, setAuthError, signIn, signOut, signUp, 
     }
 }

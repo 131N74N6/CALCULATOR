@@ -4,16 +4,15 @@ import AuthServices from "./authService";
 import type { ChangeDataProps, GetDataIntrf, InfiniteScrollIntrf, InsettDataIntrf } from '../models/dataModel';
 
 export default function DataServices() {
-    const { loading } = AuthServices();
+    const { authLoading, currentUserToken } = AuthServices();
     const [dataError, setDataError] = useState<string | null>(null);
-    const token = '';
 
     async function changeData<T>(props: ChangeDataProps<T>) {
         try {
             const request = await fetch(props.api_url, {
                 body: JSON.stringify(props.data),
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT',
@@ -38,7 +37,7 @@ export default function DataServices() {
         try {
             const request = await fetch(api_url, {
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json',
                 },
                 method: 'DELETE',
@@ -61,12 +60,12 @@ export default function DataServices() {
 
     function getData<T>(props: GetDataIntrf) {
         const { data, error, isLoading } = useQuery<T, Error>({
-            enabled: !!token && !loading,
+            enabled: !!currentUserToken && !authLoading,
             queryFn: async () => {
                 try {
                     const request = await fetch(props.api_url, {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
+                            'Authorization': `Bearer ${currentUserToken}`,
                             'Content-Type': 'application/json'
                         },
                         method: 'GET'
@@ -96,12 +95,12 @@ export default function DataServices() {
         return { data, error, isLoading }
     }
     
-    async function infiniteScroll<T>(props: InfiniteScrollIntrf) {
+    function infiniteScroll<T>(props: InfiniteScrollIntrf) {
         async function fetchData({ pageParam = 1 }: { pageParam?: number }) {
             try {
                 const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `Bearer ${currentUserToken}`,
                         'Content-Type': 'application/json'
                     },
                     method: 'GET'
@@ -125,7 +124,7 @@ export default function DataServices() {
         const { 
             data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading 
         } = useInfiniteQuery({
-            enabled: !!token && !loading,
+            enabled: !!currentUserToken && !authLoading,
             initialPageParam: 1,
             queryKey: props.query_key,
             queryFn: fetchData,
@@ -151,7 +150,7 @@ export default function DataServices() {
             const request = await fetch(props.api_url, {
                 body: JSON.stringify(props.data),
                 headers: {
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json',
                 },
                 method: 'POST',

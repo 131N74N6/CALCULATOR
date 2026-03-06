@@ -24,7 +24,11 @@ export default function SignIn() {
 
     async function signInButton(event: React.SubmitEvent) {
         event.preventDefault();
-        await signIn({ password: password.trim(), username: username.trim() });
+        await signIn({ 
+            password: password.trim(),
+            navigate_to: navigate,  
+            username: username.trim() 
+        });
     }
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);

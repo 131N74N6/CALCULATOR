@@ -25,12 +25,12 @@ export default function SignUp() {
 
     async function signUpButton(event: React.SubmitEvent) {
         event.preventDefault();
-
         await signUp({ 
             created_at: new Date().toISOString(), 
             email: email.trim(), 
             password: password.trim(), 
-            username: username.trim() 
+            username: username.trim(),
+            navigate_to: navigate 
         });
     }
 

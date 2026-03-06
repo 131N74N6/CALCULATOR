@@ -44,7 +44,7 @@ export default function BmiCalculator() {
     }
 
     return (
-        <main className="bg-[url(https://i.postimg.cc/5tjV0z6y/rain-in-autumn.jpg)] h-screen flex gap-4 p-4">
+        <section className={`bg-[url(${import.meta.env.VITE_BACKGROUND_URL})] h-screen flex gap-4 p-4`}>
             <div className="flex justify-center items-center w-full md:w-3/4">
                 <form title="bmi-calculator" onSubmit={bmiStatus} className="backdrop-blur-sm backdrop-brightness-50 border border-white p-4 flex flex-col gap-4">
                     <div className="wrap-1">
@@ -79,6 +79,6 @@ export default function BmiCalculator() {
                 </div>
             </div>
             <Navbar1/>
-        </main>
+        </section>
     )
 }
