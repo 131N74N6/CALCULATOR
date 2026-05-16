@@ -21,7 +21,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: ['http://localhost:6661', 'http://localhost:5173']
+    origin: ['http://localhost:6661', 'http://localhost:5173', 'https://my-calculator-be.vercel.app/']
 }));
 app.use('/api/auth', authRouters);
 app.use('/api/basic-calculator', basicRouters);
