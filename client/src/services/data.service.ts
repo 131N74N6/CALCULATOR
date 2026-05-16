@@ -21,10 +21,11 @@ export default function DataServices(pageName?: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setMessageText(response.message);
-                throw new Error(response.message);
+                const errorMessage = response.message || 'Failed to change data. Try again later';
+                setMessageText(errorMessage);
+                throw new Error(errorMessage);
             } else {
-                setMessageText(response);
+                setMessageText(response.message);
                 return response;
             }
         } catch (error: any) {
@@ -46,8 +47,9 @@ export default function DataServices(pageName?: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setMessageText(response.message);
-                throw new Error(response.message);
+                const errorMessage = response.message || 'Failed to delete data. Try again later';
+                setMessageText(errorMessage);
+                throw new Error(errorMessage);
             } else {
                 setMessageText(response.message);
                 return response;
@@ -77,7 +79,7 @@ export default function DataServices(pageName?: string) {
                         setMessageText(response.message);
                         throw new Error (response.message);
                     } else {
-                        setMessageText(response);
+                        setMessageText(null);
                         return response;
                     }
                 } catch (error: any) {
@@ -159,8 +161,9 @@ export default function DataServices(pageName?: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setMessageText(response.message);
-                throw new Error(response.message);
+                const errorMessage = response.message || 'Failed to input data. Try again later';
+                setMessageText(errorMessage);
+                throw new Error(errorMessage);
             } else {
                 if (pageName === 'basic-calculator') {
                     setMessageText(null);

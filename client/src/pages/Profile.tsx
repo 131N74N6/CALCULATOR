@@ -1,32 +1,43 @@
 import { useEffect, useState } from "react";
 import { Navbar1, Navbar2 } from "../components/Navbar";
 import UserServices from "../services/user.service"
+import NotifMessage from "../components/NotifMessage";
+import Loading from "../components/Loading";
 
 export default function Profile() {
     const [username, setUserName] = useState<string>('');
+    const { 
+        changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, isProcessing, 
+        messageText, setMessageText, setInEdit, userAccess, userAccessError, userAccessLoad 
+    } = UserServices();
     
     function saveChanges(event: React.SyntheticEvent) {
         event.preventDefault();
         changeUserDataMt.mutate(username);
     }
-    
-    const { 
-        changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, 
-        isProcessing, setInEdit, userAccess, userAccessError, userAccessLoad 
-    } = UserServices();
+
+    useEffect(() => {
+        if (messageText) {
+            const timer = setTimeout(() => setMessageText(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [messageText, setMessageText]);
 
     useEffect(() => {
         if (currentUserId && userAccess) setUserName(userAccess.username)
         else return;
-    }, [currentUserId, inEdit]);
+    }, [currentUserId, userAccess, inEdit]);
 
     return (
-        <div className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] h-screen flex flex-col md:flex-row gap-4 p-4`}>
+        <div className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] h-screen relative z-10 flex flex-col md:flex-row gap-4 p-4`}>
+            {messageText ? NotifMessage(messageText) : null}
             <div className="h-full min-h-50 flex flex-col gap-4 p-4 backdrop-blur-sm backdrop-brightness-50 w-full md:w-3/4 border rounded-2xl border-white">
                 {userAccessError ? (
-                    <div className="flex justify-center items-center h-full"></div>
+                    <div className="flex justify-center items-center h-full">
+                        <span className="font-medium text-white text-5xl">{userAccessError.message}</span>
+                    </div>
                 ) : userAccessLoad ? (
-                    <div className="flex justify-center items-center h-full"></div>
+                    <div className="flex justify-center items-center h-full"><Loading/></div>
                 ) : (
                     <div className="flex flex-col gap-4">
                         <span className="text-white text-font-medium text-[0.9rem]">Created At: {userAccess?.created_at}</span>

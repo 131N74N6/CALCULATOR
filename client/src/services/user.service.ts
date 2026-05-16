@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function UserServices() {
     const queryClient = useQueryClient();
     const { currentUserId, signOut } = AuthServices();
-    const { changeData, deleteData, getData } = DataServices();
+    const { changeData, deleteData, getData, messageText, setMessageText } = DataServices();
 
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [inEdit, setInEdit] = useState<boolean>(false);
@@ -50,7 +50,7 @@ export default function UserServices() {
     });
 
     return { 
-        changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, isProcessing, 
-        setInEdit, setIsProcessing, userAccess, userAccessError, userAccessLoad 
+        changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, isProcessing, messageText, 
+        setInEdit, setIsProcessing, setMessageText, userAccess, userAccessError, userAccessLoad 
     }
 }

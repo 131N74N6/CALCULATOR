@@ -5,8 +5,7 @@ import { BMI } from '../models/bmi-calculator-model';
 
 export async function changeCurrentUserData(req: Request, res: Response) {
     try {
-        const usernameExist = Auth.findOne({ username: req.body.username });
-        if (usernameExist === req.body.username) return res.status(400).json({ message: 'username already exist' });
+        if (!req.body.username) return res.status(400).json({ message: 'username is required' });
         
         await Auth.updateOne({ _id: req.params.user_id }, {
             $set: { username: req.body.username }
