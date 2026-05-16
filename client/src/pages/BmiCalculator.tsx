@@ -3,37 +3,32 @@ import { Navbar1, Navbar2 } from "../components/Navbar";
 import BmiCalculatorServices from "../services/bmi-calculator.service";
 import AuthServices from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
-import type { BmiResultIntrf } from "../models/bmi-calculator.model";
 
 export default function BmiCalculator() {
     const navigate = useNavigate();
     const { currentUserId } = AuthServices();
-    const { executeFormula, isProcessing } = BmiCalculatorServices();
+    const { executeFormula, isProcessing, localResult, messageText, setLocalResult, setMessageText } = BmiCalculatorServices();
 
     const [weight, setWeight] = useState<string>('');
     const [height, setHeight] = useState<string>('');
-    const [localResult, setLocalResult] = useState<BmiResultIntrf | null>(null);
 
     function bmiStatus(event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) {
         event.preventDefault();
-        executeFormula.mutate({ height: Number(height.trim()), weight: Number(weight.trim()) }, {
-            onSuccess: (response) => setLocalResult({ 
-                decision: response.decision, 
-                result: response.result.toString() 
-            })
-        });
+        executeFormula.mutate({ height: Number(height.trim()), weight: Number(weight.trim()) });
     }
 
     function resetOperation() {
         setWeight('');
         setHeight('');
         setLocalResult(null);
+        setMessageText(null);
     }
 
     useEffect(() => {
         if (!currentUserId) {
             resetOperation();
             setLocalResult(null);
+            setMessageText(null);
         }
     }, [currentUserId]);
 
@@ -92,7 +87,11 @@ export default function BmiCalculator() {
                             </button>
                         </div>
                         <div className="bmi-result ml-4 flex items-center">
-                            {localResult ? (
+                            {messageText ? (
+                                <div className="border border-white text-white outline-0 p-2 text-[0.9rem] font-[450]">
+                                    {messageText}
+                                </div>
+                            ) : localResult ? (
                                 <div className="text-white space-y-2">
                                     <p className="text-lg font-semibold">
                                         BMI: <span className="text-blue-400">{localResult.result}</span>
@@ -104,7 +103,9 @@ export default function BmiCalculator() {
                                     </p>
                                 </div>
                             ) : (
-                                <p className="text-white text-center italic">Result will appear here</p>
+                                <div className="flex justify-center">
+                                    <span className="text-white text-center italic">Result will appear here</span>
+                                </div>
                             )}
                         </div>
                     </form>
@@ -114,5 +115,5 @@ export default function BmiCalculator() {
             {Navbar1(isProcessing)}
             {Navbar2(isProcessing)}
         </section>
-    )
+    );
 }

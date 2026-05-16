@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BasicIntrf, ExecutorIntrf } from "../models/basic-calculator.model";
+import type { BasicCalcIntrf, ExecutorIntrf } from "../models/basic-calculator.model";
 import AuthServices from "./auth.service";
 import DataServices from "./data.service";
 import { useState } from "react";
@@ -7,10 +7,12 @@ import { useState } from "react";
 export default function BasicCalculatorServices() {
     const queryClient = useQueryClient();
     const { currentUserId } = AuthServices();
-    const { deleteData, infiniteScroll, insertData, setShowResult, showResult } = DataServices('basic-calculator');
+    const { deleteData, infiniteScroll, insertData, messageText, setMessageText } = DataServices('basic-calculator');
+    
+    const [localResult, setLocalResult] = useState<string | null>(null);
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    const { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData } = infiniteScroll<BasicIntrf>({
+    const { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData } = infiniteScroll<BasicCalcIntrf>({
         api_url: `${import.meta.env.VITE_BASE_API_URL}/basic-calculator/logs/${currentUserId}`,
         limit: 15,
         query_key: [`basic-calculator-data-${currentUserId}`],
@@ -50,11 +52,18 @@ export default function BasicCalculatorServices() {
             });
         },
         onError: () => {},
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] }),
+        onSuccess: (response) => {
+            queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] });
+            setLocalResult(response.result);
+        },
         onSettled: () => setIsProcessing(false)
     });
 
     const history = { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData }
 
-    return { deleteOneFromHistory, deleteAllFromHistory, executeFormula, history, isProcessing, setIsProcessing, setShowResult, showResult }
+    return { 
+        deleteOneFromHistory, deleteAllFromHistory, executeFormula, 
+        history, isProcessing, localResult, setLocalResult, messageText, setIsProcessing,
+        setMessageText
+    }
 }

@@ -3,9 +3,9 @@ import { useState } from "react";
 import AuthServices from "./auth.service";
 import type { ChangeDataProps, GetDataIntrf, InfiniteScrollIntrf, InsettDataIntrf } from '../models/data.model';
 
-export default function DataServices(pageName: string) {
+export default function DataServices(pageName?: string) {
     const { authLoading, currentUserToken } = AuthServices();
-    const [showResult, setShowResult] = useState<string | { result: number; decision: string } | null>(null);
+    const [messageText, setMessageText] = useState<string | null>(null);
 
     async function changeData<T>(props: ChangeDataProps<T>) {
         try {
@@ -21,14 +21,14 @@ export default function DataServices(pageName: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setShowResult(response.message);
+                setMessageText(response.message);
                 throw new Error(response.message);
             } else {
-                setShowResult(response);
+                setMessageText(response);
                 return response;
             }
         } catch (error: any) {
-            setShowResult(error.message || 'Check Your Network Connection');
+            setMessageText(error.message || 'Check Your Network Connection');
             throw error;
         }
     }
@@ -46,14 +46,14 @@ export default function DataServices(pageName: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setShowResult(response.message);
+                setMessageText(response.message);
                 throw new Error(response.message);
             } else {
-                setShowResult(response.message);
+                setMessageText(response.message);
                 return response;
             }
         } catch (error: any) {
-            setShowResult(error.message || 'Check your network connection')
+            setMessageText(error.message || 'Check your network connection')
             throw error;
         }
     }
@@ -74,14 +74,14 @@ export default function DataServices(pageName: string) {
                     const response = await request.json();
 
                     if (!request.ok) {
-                        setShowResult(response.message);
+                        setMessageText(response.message);
                         throw new Error (response.message);
                     } else {
-                        setShowResult(response);
+                        setMessageText(response);
                         return response;
                     }
                 } catch (error: any) {
-                    setShowResult(error.message || 'Check your network connection');
+                    setMessageText(error.message || 'Check your network connection');
                     throw error;
                 }
             },
@@ -109,14 +109,14 @@ export default function DataServices(pageName: string) {
                 const response = await request.json();
 
                 if (!request.ok) {
-                    setShowResult(response.message);
+                    setMessageText(response.message);
                     throw new Error(response.message);
                 } else {
-                    setShowResult(null);
+                    setMessageText(null);
                     return response;
                 }
             } catch (error: any) {
-                setShowResult(error.message || 'Check your network connection');
+                setMessageText(error.message || 'Check your network connection');
                 throw error;
             }
         }
@@ -159,15 +159,15 @@ export default function DataServices(pageName: string) {
             const response = await request.json();
 
             if (!request.ok) {
-                setShowResult(response.message);
+                setMessageText(response.message);
                 throw new Error(response.message);
             } else {
                 if (pageName === 'basic-calculator') {
-                    setShowResult(String(response.result));
+                    setMessageText(null);
                     console.log(String(response.result));
                     return response;
                 } else if (pageName === 'bmi-calculator') {
-                    setShowResult({ result: response.result, decision: response.decision });
+                    setMessageText(null);
                     console.log({ result: response.result, decision: response.decision });
                     return response;
                 } else {
@@ -175,10 +175,10 @@ export default function DataServices(pageName: string) {
                 }
             }
         } catch (error: any) {
-            setShowResult(error.message || 'Check your network connection');
+            setMessageText(error.message || 'Check your network connection');
             throw error;
         }
     }
 
-    return { changeData, showResult, deleteData, getData, infiniteScroll, insertData, setShowResult }
+    return { changeData, messageText, deleteData, getData, infiniteScroll, insertData, setMessageText }
 }

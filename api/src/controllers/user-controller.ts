@@ -5,11 +5,11 @@ import { BMI } from '../models/bmi-calculator-model';
 
 export async function changeCurrentUserData(req: Request, res: Response) {
     try {
+        const usernameExist = Auth.findOne({ username: req.body.username });
+        if (usernameExist === req.body.username) return res.status(400).json({ message: 'username already exist' });
+        
         await Auth.updateOne({ _id: req.params.user_id }, {
-            $set: {
-                email: req.body.email,
-                username: req.body.username
-            }
+            $set: { username: req.body.username }
         });
         res.status(200).json({ message: 'user data has changed' });
     } catch (error) {

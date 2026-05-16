@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { BmiIntrf, BmiExecutorIntrf } from "../models/bmi-calculator.model";
+import type { BmiIntrf, BmiExecutorIntrf, BmiResultIntrf } from "../models/bmi-calculator.model";
 import AuthServices from "./auth.service";
 import DataServices from "./data.service";
 import { useState } from "react";
@@ -7,7 +7,9 @@ import { useState } from "react";
 export default function BmiCalculatorServices() {
     const queryClient = useQueryClient();
     const { currentUserId } = AuthServices();
-    const { deleteData, infiniteScroll, insertData, showResult, setShowResult } = DataServices('bmi-calculator');
+    const { deleteData, infiniteScroll, insertData, messageText, setMessageText } = DataServices('bmi-calculator');
+
+    const [localResult, setLocalResult] = useState<BmiResultIntrf | null>(null);
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
     const { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData } = infiniteScroll<BmiIntrf>({
@@ -51,11 +53,21 @@ export default function BmiCalculatorServices() {
             });
         },
         onError: () => {},
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] }),
+        onSuccess: (response) => {
+            queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] });
+            setLocalResult({
+                decision: response.decision, 
+                result: response.result.toString()
+            });
+        },
         onSettled: () => setIsProcessing(false)
     });
 
     const history = { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData }
 
-    return { deleteOneFromHistory, deleteAllFromHistory, executeFormula, history, isProcessing, setIsProcessing, showResult, setShowResult }
+    return { 
+        deleteOneFromHistory, deleteAllFromHistory, executeFormula, history, 
+        isProcessing, localResult, setIsProcessing, setLocalResult, messageText, 
+        setMessageText 
+    }
 }

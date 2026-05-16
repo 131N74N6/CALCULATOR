@@ -6,17 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 export default function BasicCalculator() {
     const { currentUserId } = AuthServices();
-    const { executeFormula, isProcessing } = BasicCalculatorServices();
+    const { executeFormula, isProcessing, localResult, setMessageText, setLocalResult, messageText } = BasicCalculatorServices();
 
     const navigate = useNavigate();
     const buttonComponent = ['0','1','2','3','4','5','6','7','8','9','C','+','-','*','/','(',')','.','^'];
 
     const [handleDisplay, setHandleDisplay] = useState<string>('');
-    const [localResult, setLocalResult] = useState<string | null>(null);
     
     function operationButton(value: string) {
         if (value === "C") {
             setHandleDisplay("");
+            setMessageText(null);
             setLocalResult(null);
         }
         else setHandleDisplay((prev) => prev + value);
@@ -24,12 +24,13 @@ export default function BasicCalculator() {
     
     function executor(event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) {
         event.preventDefault();
-        executeFormula.mutate(handleDisplay, { onSuccess: (response) => setLocalResult(response.result) });
+        executeFormula.mutate(handleDisplay);
     }
 
     useEffect(() => {
         if (!currentUserId) {
             setHandleDisplay('');
+            setMessageText(null);
             setLocalResult(null);
         }
     }, [currentUserId]);
@@ -48,7 +49,11 @@ export default function BasicCalculator() {
                 </div>
                 <div className="flex justify-center h-full items-center">
                     <form onSubmit={executor} className="border w-75 h-105.5 border-white p-4 flex flex-col gap-4">
-                        {localResult ? (
+                        {messageText ? (
+                            <div className="border border-white text-white outline-0 p-2 text-[0.9rem] font-[450]">
+                                {messageText}
+                            </div>
+                        ) : localResult ? (
                             <div className="border border-white text-white outline-0 p-2 text-[0.9rem] font-[450]">
                                 {handleDisplay} = {localResult}
                             </div>
@@ -80,5 +85,5 @@ export default function BasicCalculator() {
             {Navbar1(isProcessing)}
             {Navbar2(isProcessing)}
         </main>
-    )
+    );
 }

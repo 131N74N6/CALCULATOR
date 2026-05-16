@@ -7,5 +7,5 @@ export default function NotifMessage(message: string) {
                 </span>
             </div>
         </div>
-    )
+    );
 }
