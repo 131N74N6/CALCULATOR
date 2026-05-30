@@ -13,11 +13,20 @@ export default function BasicCalculatorLogs() {
     const { deleteAllFromHistory, deleteOneFromHistory, history, isProcessing } = BasicCalculatorServices();
 
     useEffect(() => {
+        if (deleteAllFromHistory.isError && deleteAllFromHistory.error) {
+            setMessageText(deleteAllFromHistory.error.message); 
+        }
+    }, [deleteAllFromHistory.isError, deleteAllFromHistory.error, setMessageText]);
+
+    useEffect(() => {
         if (messageText) {
-            const timer = setTimeout(() => setMessageText(null), 3000);
+            const timer = setTimeout(() => {
+                setMessageText(null);
+                if (deleteAllFromHistory.isError) deleteAllFromHistory.reset();
+            }, 3000);
             return () => clearTimeout(timer);
         }
-    }, [messageText, setMessageText]);
+    }, [messageText, setMessageText, deleteAllFromHistory]);
     
     return (
         <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>

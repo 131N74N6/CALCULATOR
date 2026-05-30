@@ -25,7 +25,7 @@ export default function DataServices(pageName?: string) {
                 throw new Error(errorMessage);
             } else {
                 setMessageText(response.message);
-                return response;
+                await response;
             }
         } catch (error: any) {
             setMessageText(error.message || 'Check Your Network Connection');
@@ -50,7 +50,7 @@ export default function DataServices(pageName?: string) {
                 throw new Error(errorMessage);
             } else {
                 setMessageText(response.message);
-                return response;
+                await response;
             }
         } catch (error: any) {
             setMessageText(error.message || 'Check your network connection');
@@ -164,11 +164,9 @@ export default function DataServices(pageName?: string) {
             } else {
                 if (pageName === 'basic-calculator') {
                     setMessageText(null);
-                    console.log(String(response.result));
                     return response;
                 } else if (pageName === 'bmi-calculator') {
                     setMessageText(null);
-                    console.log({ result: response.result, decision: response.decision });
                     return response;
                 } else {
                     //

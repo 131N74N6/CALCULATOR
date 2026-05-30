@@ -32,7 +32,7 @@ export default function BmiCalculatorServices() {
     const deleteAllFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/rm-all/${currentUserId}`)
+            return await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/rm-all/${currentUserId}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] }),

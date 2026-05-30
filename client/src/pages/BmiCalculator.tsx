@@ -23,6 +23,12 @@ export default function BmiCalculator() {
         setLocalResult(null);
         setMessageText(null);
     }
+    useEffect(() => {
+        if (messageText) {
+            const timer = setTimeout(() => setMessageText(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [messageText, setMessageText]);
 
     useEffect(() => {
         if (!currentUserId) {

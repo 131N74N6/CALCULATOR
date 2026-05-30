@@ -28,6 +28,13 @@ export default function BasicCalculator() {
     }
 
     useEffect(() => {
+        if (messageText) {
+            const timer = setTimeout(() => setMessageText(null), 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [messageText, setMessageText]);
+    
+    useEffect(() => {
         if (!currentUserId) {
             setHandleDisplay('');
             setMessageText(null);

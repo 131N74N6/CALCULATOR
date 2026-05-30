@@ -32,7 +32,7 @@ export default function BasicCalculatorServices() {
     const deleteAllFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/rm-all/${currentUserId}`)
+            return await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/rm-all/${currentUserId}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] }),
