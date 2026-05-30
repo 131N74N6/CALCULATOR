@@ -36,7 +36,7 @@ export default function SignUp() {
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
     return (
-        <section className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] flex justify-center items-center p-4 h-screen relative z-10`}>
+        <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] flex justify-center items-center p-4 h-screen relative z-10'>
             <form onSubmit={signUpButton} className="backdrop-blur-sm backdrop-brightness-50 border border-white p-4 w-120 rounded-md flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                     <label htmlFor="your-email" className="text-white text-md font-md">Email</label>

@@ -6,17 +6,11 @@ import { useState } from "react";
 
 export default function UserServices() {
     const queryClient = useQueryClient();
-    const { currentUserId, signOut } = AuthServices();
-    const { changeData, deleteData, getData, messageText, setMessageText } = DataServices();
+    const { authUser, authError, authLoading, currentUserId, signOut } = AuthServices();
+    const { changeData, deleteData, messageText, setMessageText } = DataServices();
 
     const [isProcessing, setIsProcessing] = useState<boolean>(false);
     const [inEdit, setInEdit] = useState<boolean>(false);
-
-    const { data: userAccess, isLoading: userAccessLoad, error: userAccessError } = getData<UserIntrf>({
-        api_url: `${import.meta.env.VITE_BASE_API_URL}/user/user-data/${currentUserId}`,
-        query_key: [`current-user-${currentUserId}`],
-        stale_time: 1800000,
-    });
 
     const changeUserDataMt = useMutation({
         onMutate: () => setIsProcessing(false),
@@ -28,7 +22,7 @@ export default function UserServices() {
         },
         onError: () => {},
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: [`current-user-${currentUserId}`] });
+            queryClient.invalidateQueries({ queryKey: ['current-user'] });
             setInEdit(false);
         },
         onSettled: () => setIsProcessing(false)
@@ -37,20 +31,20 @@ export default function UserServices() {
     const deleteUserDataMt = useMutation({
         onMutate: () => setIsProcessing(false),
         mutationFn: async () => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/user/remove/${currentUserId}`);
+            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/user/rm/${currentUserId}`);
         },
         onError: () => {},
-        onSuccess: () => {
+        onSuccess: async () => {
             queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] });
             queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] });
-            queryClient.invalidateQueries({ queryKey: [`current-user-${currentUserId}`] });
-            signOut();
+            queryClient.invalidateQueries({ queryKey: ['current-user'] });
+            await signOut();
         },
         onSettled: () => setIsProcessing(false)
     });
 
     return { 
         changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, isProcessing, messageText, 
-        setInEdit, setIsProcessing, setMessageText, userAccess, userAccessError, userAccessLoad 
+        setInEdit, setIsProcessing, setMessageText, authUser, authError, authLoading 
     }
 }

@@ -18,11 +18,19 @@ export async function signIn(req: Request, res: Response) {
         if (!isPasswordMatch)  return res.status(404).json({ message: 'invalid password' });
 
         const token = jwt.sign(
-            { user_id: userFound._id.toString() },
-            process.env.JWT_SECRET_KEY || 'secret_key'
+            { user_id: userFound._id.toString(), username: userFound.username },
+            process.env.JWT_SECRET_KEY || 'secret_key',
+            { expiresIn: '1d'}
         );
 
-        res.status(200).json({ token: token, user_id: userFound._id });
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        res.status(200).json({ user_id: userFound._id, username: userFound.username });
     } catch (error: any) {
         res.status(500).json({ message: 'internal server error' });
     }
@@ -48,6 +56,20 @@ export async function signUp(req: Request, res: Response) {
         await newUser.save();
         res.status(200).json({ message: 'new user added' });
     } catch (error) {
-        res.status(500).json({ message: 'internal server error' })
+        res.status(500).json({ message: 'internal server error' });
+    }
+}
+
+export async function logOut(_: Request, res: Response) {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production'
+        });
+
+        res.status(200).json({ message: 'user has been logged out' });
+    } catch (error: any) {
+        res.status(500).json({ message: 'internal server error' });
     }
 }

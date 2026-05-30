@@ -1,5 +1,5 @@
 export type UserAccessIntrf = {
-    token: string;
+    username: string;
     user_id: string;
 }
 

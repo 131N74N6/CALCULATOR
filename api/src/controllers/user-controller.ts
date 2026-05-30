@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Auth } from '../models/user-model';
 import { Basic } from '../models/basic-calculator-model';
 import { BMI } from '../models/bmi-calculator-model';
+import { AuthRequest } from '../middleware/auth-middleware';
 
 export async function changeCurrentUserData(req: Request, res: Response) {
     try {
@@ -27,9 +28,9 @@ export async function deleteCurrentUser(req: Request, res: Response) {
     }
 }
 
-export async function getCurrentUserData(req: Request, res: Response) {
+export async function getCurrentUserData(req: AuthRequest, res: Response) {
     try {
-        const getUser = await Auth.find({ _id: req.params.user_id }, { password: 0 });
+        const getUser = await Auth.find({ _id: req.user?.user_id }, { password: 0 });
         res.status(200).json({
             created_at: getUser[0].created_at,
             email: getUser[0].email,

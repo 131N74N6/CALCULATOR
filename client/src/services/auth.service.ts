@@ -1,43 +1,42 @@
-import { useEffect, useState } from "react";
-import type { SignInIntrf, SignUpIntrf, UserAccessIntrf } from "../models/auth.model";
+import { useState } from "react";
+import type { SignInIntrf, SignUpIntrf, UserIntrf } from "../models/auth.model";
 import { useNavigate } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function AuthServices() {
-    const [authLoading, setAuthLoading] = useState<boolean>(true);
-    const [authUser, setAuthUser] = useState<UserAccessIntrf | null>(null);
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [authError, setAuthError] = useState<string | null>(null);
 
-    const currentUserId = authUser ? authUser.user_id : '';
-    const currentUserToken = authUser ? authUser.token : '';
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        function initAuth() {
+    const { data: authUser, isLoading: authLoading, error: authUserError } = useQuery<UserIntrf | null>({
+        queryKey: ['current-user'],
+        queryFn: async () => {
             try {
-                const userExist = localStorage.getItem('user');
-                if (userExist) {
-                    const parsedUser = JSON.parse(userExist);
-                    setAuthUser(parsedUser);
-                }
-            } catch (err: any) {
-                localStorage.removeItem('user');
-                setAuthUser(null);
-                setAuthError(err.message || 'Failed to retrieve user data. Please sign in again.');
-            } finally {
-                setAuthLoading(false); 
-            }
-        };
+                const request = await fetch(`${import.meta.env.VITE_BASE_API_URL}/user/user-data`, {
+                    credentials: 'include',
+                    method: 'GET',
+                });
 
-        initAuth();
-    }, []);
+                if (!request.ok) return null;
+                else return await request.json();
+            } catch (err) {
+                return null;
+            }
+        },
+        staleTime: Infinity, 
+        retry: false       // Jangan lakukan retry jika user memang belum login
+    });
+
+    const currentUserId = authUser && authUser.user_id;
+    const currentUserName = authUser && authUser.username;
 
     async function signIn(props: SignInIntrf) {
-        setAuthLoading(true);
         setAuthError(null);
 
         try {
             const request = await fetch(`${import.meta.env.VITE_BASE_API_URL}/auth/sign-in`, {
                 body: JSON.stringify(props),
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST'
             });
@@ -46,31 +45,24 @@ export default function AuthServices() {
 
             if (!request.ok) {
                 const errorMessage = response.error || response.message || 'Failed to sign-in! Try again later';
-                setAuthError(errorMessage);
-                setAuthUser(null);
+                throw new Error(errorMessage);
             } else {
-                const currentUser = { 
-                    token: response.token, 
-                    user_id: response.user_id 
-                }
-                localStorage.setItem('user', JSON.stringify(currentUser));
-                setAuthUser(currentUser);
+                await queryClient.invalidateQueries({ queryKey: ['current-user'] });
                 setAuthError(null);
+                navigate('/basic-calculator');
             }
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
-        } finally {
-            setAuthLoading(false);
-        }
+        } 
     }
 
     async function signUp(props: SignUpIntrf) {
-        setAuthLoading(true);
         setAuthError(null);
 
         try {
             const request = await fetch(`${import.meta.env.VITE_BASE_API_URL}/auth/sign-up`, {
                 body: JSON.stringify(props),
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST'
             });
@@ -86,29 +78,28 @@ export default function AuthServices() {
             }
         } catch (error: any) {
             setAuthError(error.message || 'Check your internet connection');
-        } finally {
-            setAuthLoading(false);
-        }
+        } 
     }
 
-    function signOut() {
-        setAuthLoading(true);
+    async function signOut() {
         setAuthError(null);
-
+        
         try {
-            setAuthError(null);
-            setAuthUser(null);
-            localStorage.removeItem('user');
-            navigate('/sign-in');
+            await fetch(`${import.meta.env.VITE_BASE_API_URL}/auth/log-out`, {
+                method: 'POST',
+                credentials: 'include'
+            });
         } catch (error: any) {
-            setAuthError(error.message || 'Check your internet connection');
+            // Tetap lanjutkan proses logout di frontend meskipun request API logout gagal
         } finally {
-            setAuthLoading(false);
+            queryClient.setQueryData(['current-user'], null);
+            queryClient.clear();
+            navigate('/sign-in');
         }
     }
 
     return { 
-        currentUserId, currentUserToken, authUser,
+        currentUserId, currentUserName, authUser, authUserError,
         authError, authLoading, setAuthError, signIn, signOut, signUp, 
     }
 }

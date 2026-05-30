@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-interface AuthRequest extends Request {
-    user?: { token: string; user_id: string }
+export interface AuthRequest extends Request {
+    user?: { 
+        user_id: string; 
+        username: string; 
+    }
 }
 
-interface JwtPayload {
-    token: string; 
+export interface JwtPayload {
     user_id: string
+    username: string; 
 }
 
 export async function checkOwnerShip(req: AuthRequest, res: Response, next: NextFunction) {
@@ -26,13 +29,12 @@ export async function checkOwnerShip(req: AuthRequest, res: Response, next: Next
 
 export async function verifyToken(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-        const header = req.headers.authorization;
-        if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ message: 'token required' });
+        const token = req.cookies?.token;
+        if (!token) return res.status(401).json({ message: 'Access token is missing. Please log in.' });
 
-        const token = header.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY || 'secret_key') as JwtPayload;
+        req.user = { user_id: decoded.user_id, username: decoded.username };
 
-        req.user = { token: token, user_id: decoded.user_id };
         next();
     } catch (error) {
         res.status(500).json({ message: 'internal server error' });

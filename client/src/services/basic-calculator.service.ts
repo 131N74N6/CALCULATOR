@@ -22,7 +22,7 @@ export default function BasicCalculatorServices() {
     const deleteOneFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async (_id: string) => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/remove/${_id}`)
+            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/rm/${_id}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] }),
@@ -32,7 +32,7 @@ export default function BasicCalculatorServices() {
     const deleteAllFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/remove-all/${currentUserId}`)
+            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/rm-all/${currentUserId}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] }),
@@ -47,7 +47,7 @@ export default function BasicCalculatorServices() {
                 data: {
                     created_at: new Date().toISOString(),
                     formula: formula,
-                    user_id: currentUserId
+                    user_id: currentUserId!
                 }
             });
         },

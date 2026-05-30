@@ -4,15 +4,15 @@ import AuthServices from "./auth.service";
 import type { ChangeDataProps, GetDataIntrf, InfiniteScrollIntrf, InsettDataIntrf } from '../models/data.model';
 
 export default function DataServices(pageName?: string) {
-    const { authLoading, currentUserToken } = AuthServices();
+    const { authLoading, currentUserId } = AuthServices();
     const [messageText, setMessageText] = useState<string | null>(null);
 
     async function changeData<T>(props: ChangeDataProps<T>) {
         try {
             const request = await fetch(props.api_url, {
+                credentials: 'include',
                 body: JSON.stringify(props.data),
                 headers: {
-                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json'
                 },
                 method: 'PUT',
@@ -22,7 +22,6 @@ export default function DataServices(pageName?: string) {
 
             if (!request.ok) {
                 const errorMessage = response.message || 'Failed to change data. Try again later';
-                setMessageText(errorMessage);
                 throw new Error(errorMessage);
             } else {
                 setMessageText(response.message);
@@ -37,8 +36,8 @@ export default function DataServices(pageName?: string) {
     async function deleteData(api_url: string) {
         try {
             const request = await fetch(api_url, {
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json',
                 },
                 method: 'DELETE',
@@ -48,26 +47,25 @@ export default function DataServices(pageName?: string) {
 
             if (!request.ok) {
                 const errorMessage = response.message || 'Failed to delete data. Try again later';
-                setMessageText(errorMessage);
                 throw new Error(errorMessage);
             } else {
                 setMessageText(response.message);
                 return response;
             }
         } catch (error: any) {
-            setMessageText(error.message || 'Check your network connection')
+            setMessageText(error.message || 'Check your network connection');
             throw error;
         }
     }
 
     function getData<T>(props: GetDataIntrf) {
         const { data, error, isLoading } = useQuery<T, Error>({
-            enabled: !!currentUserToken && !authLoading,
+            enabled: !!currentUserId && !authLoading,
             queryFn: async () => {
                 try {
                     const request = await fetch(props.api_url, {
+                        credentials: 'include',
                         headers: {
-                            'Authorization': `Bearer ${currentUserToken}`,
                             'Content-Type': 'application/json'
                         },
                         method: 'GET'
@@ -76,8 +74,8 @@ export default function DataServices(pageName?: string) {
                     const response = await request.json();
 
                     if (!request.ok) {
-                        setMessageText(response.message);
-                        throw new Error (response.message);
+                        const errorMessage = response.message || 'Failed to get data. Try again later';
+                        throw new Error(errorMessage);
                     } else {
                         setMessageText(null);
                         return response;
@@ -101,8 +99,8 @@ export default function DataServices(pageName?: string) {
         async function fetchData({ pageParam = 1 }: { pageParam?: number }) {
             try {
                 const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
+                    credentials: 'include',
                     headers: {
-                        'Authorization': `Bearer ${currentUserToken}`,
                         'Content-Type': 'application/json'
                     },
                     method: 'GET'
@@ -111,8 +109,8 @@ export default function DataServices(pageName?: string) {
                 const response = await request.json();
 
                 if (!request.ok) {
-                    setMessageText(response.message);
-                    throw new Error(response.message);
+                    const errorMessage = response.message || 'Failed to get data. Try again later';
+                    throw new Error(errorMessage);
                 } else {
                     setMessageText(null);
                     return response;
@@ -126,7 +124,7 @@ export default function DataServices(pageName?: string) {
         const { 
             data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading 
         } = useInfiniteQuery({
-            enabled: !!currentUserToken && !authLoading,
+            enabled: !!currentUserId && !authLoading,
             initialPageParam: 1,
             queryKey: props.query_key,
             queryFn: fetchData,
@@ -151,8 +149,8 @@ export default function DataServices(pageName?: string) {
         try {
             const request = await fetch(props.api_url, {
                 body: JSON.stringify(props.data),
+                credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${currentUserToken}`,
                     'Content-Type': 'application/json',
                 },
                 method: 'POST',
@@ -162,7 +160,6 @@ export default function DataServices(pageName?: string) {
 
             if (!request.ok) {
                 const errorMessage = response.message || 'Failed to input data. Try again later';
-                setMessageText(errorMessage);
                 throw new Error(errorMessage);
             } else {
                 if (pageName === 'basic-calculator') {

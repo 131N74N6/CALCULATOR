@@ -15,10 +15,12 @@ import basicRouters from './routers/basic-calculator-router';
 import bmiRouters from './routers/bmi-calculator-router';
 import authRouters from './routers/auth-router';
 import userRoutes from './routers/user-router';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     credentials: true,
     origin: [

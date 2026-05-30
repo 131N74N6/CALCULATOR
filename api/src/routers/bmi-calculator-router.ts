@@ -4,8 +4,8 @@ import { checkOwnerShip, verifyToken } from '../middleware/auth-middleware';
 
 const bmiRouters = express.Router();
 
-bmiRouters.delete('/remove/:_id', deleteOneBmiResult);
-bmiRouters.delete('/remove-all/:user_id', verifyToken, checkOwnerShip, deleteAllBmiResults);
+bmiRouters.delete('/rm/:_id', deleteOneBmiResult);
+bmiRouters.delete('/rm-all/:user_id', verifyToken, checkOwnerShip, deleteAllBmiResults);
 
 bmiRouters.get('/logs/:user_id', verifyToken, checkOwnerShip, getCurrentUserBmiResults);
 

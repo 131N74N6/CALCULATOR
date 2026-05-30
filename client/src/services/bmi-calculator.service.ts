@@ -22,7 +22,7 @@ export default function BmiCalculatorServices() {
     const deleteOneFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async (_id: string) => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/remove/${_id}`)
+            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/rm/${_id}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] }),
@@ -32,7 +32,7 @@ export default function BmiCalculatorServices() {
     const deleteAllFromHistory = useMutation({
         onMutate: () => setIsProcessing(true),
         mutationFn: async () => {
-            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/remove-all/${currentUserId}`)
+            await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/rm-all/${currentUserId}`)
         },
         onError: () => {},
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] }),
@@ -48,7 +48,7 @@ export default function BmiCalculatorServices() {
                     created_at: new Date().toISOString(),
                     height: height,
                     weight: weight,
-                    user_id: currentUserId
+                    user_id: currentUserId!
                 }
             });
         },

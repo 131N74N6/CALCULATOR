@@ -33,7 +33,7 @@ export default function BmiCalculator() {
     }, [currentUserId]);
 
     return (
-        <section className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] h-screen flex flex-col md:flex-row gap-4 p-4`}>
+        <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] h-screen flex flex-col md:flex-row gap-4 p-4'>
             <div className="p-4 flex flex-col gap-4 h-full w-full md:w-3/4 backdrop-blur-sm backdrop-brightness-50 border border-white rounded-2xl">
                 <div className="flex justify-center items-center h-full">
                     <form title="bmi-calculator" onSubmit={bmiStatus} className="border border-white p-4 flex flex-col gap-4 w-80 rounded-2xl">

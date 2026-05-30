@@ -8,7 +8,7 @@ export default function Profile() {
     const [username, setUserName] = useState<string>('');
     const { 
         changeUserDataMt, currentUserId, deleteUserDataMt, inEdit, isProcessing, 
-        messageText, setMessageText, setInEdit, userAccess, userAccessError, userAccessLoad 
+        messageText, setMessageText, setInEdit, authUser, authError, authLoading 
     } = UserServices();
     
     function saveChanges(event: React.SyntheticEvent) {
@@ -24,25 +24,25 @@ export default function Profile() {
     }, [messageText, setMessageText]);
 
     useEffect(() => {
-        if (currentUserId && userAccess) setUserName(userAccess.username)
+        if (currentUserId && authUser) setUserName(authUser.username)
         else return;
-    }, [currentUserId, userAccess, inEdit]);
+    }, [currentUserId, authUser, inEdit]);
 
     return (
-        <div className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] h-screen relative z-10 flex flex-col md:flex-row gap-4 p-4`}>
+        <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] h-screen relative z-10 flex flex-col md:flex-row gap-4 p-4'>
             {messageText ? NotifMessage(messageText) : null}
             <div className="h-full min-h-50 flex flex-col gap-4 p-4 backdrop-blur-sm backdrop-brightness-50 w-full md:w-3/4 border rounded-2xl border-white">
-                {userAccessError ? (
+                {authError ? (
                     <div className="flex justify-center items-center h-full">
-                        <span className="font-medium text-white text-5xl">{userAccessError.message}</span>
+                        <span className="font-medium text-white text-5xl">{authError}</span>
                     </div>
-                ) : userAccessLoad ? (
+                ) : authLoading ? (
                     <div className="flex justify-center items-center h-full"><Loading/></div>
                 ) : (
                     <div className="flex flex-col gap-4">
-                        <span className="text-white text-font-medium text-[0.9rem]">Created At: {userAccess?.created_at}</span>
-                        <span className="text-white text-font-medium text-[0.9rem]">Email: {userAccess?.email}</span>
-                        <span className="text-white text-font-medium text-[0.9rem]">User Id: {userAccess?.user_id}</span>
+                        <span className="text-white text-font-medium text-[0.9rem]">Created At: {authUser?.created_at}</span>
+                        <span className="text-white text-font-medium text-[0.9rem]">Email: {authUser?.email}</span>
+                        <span className="text-white text-font-medium text-[0.9rem]">User Id: {authUser?.user_id}</span>
                         {inEdit ? (
                             <input
                                 type="text"
@@ -52,7 +52,7 @@ export default function Profile() {
                                 className="border border-white p-[0.4rem] text-white text-font-medium text-[0.9rem]"
                             />
                         ) : (
-                            <span className="text-white text-font-medium text-[0.9rem]">Username: {userAccess?.username}</span>
+                            <span className="text-white text-font-medium text-[0.9rem]">Username: {authUser?.username}</span>
                         )}
                         <div className="flex gap-2.5">
                             {inEdit ? (

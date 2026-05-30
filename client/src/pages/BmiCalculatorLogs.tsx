@@ -4,6 +4,7 @@ import BmiCalculatorServices from "../services/bmi-calculator.service";
 import { useEffect } from "react";
 import Loading from "../components/Loading";
 import BmiCalculatorList from "../components/BmiCalculatorList";
+import NotifMessage from "../components/NotifMessage";
 
 export default function BmiCalculatorLogs() {
     const navigate = useNavigate();
@@ -17,7 +18,8 @@ export default function BmiCalculatorLogs() {
         }, [messageText, setMessageText]);
 
     return (
-        <div className={`bg-[url(${import.meta.env.VITE_BACKGROUND})] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10`}>
+        <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
+            {messageText ? NotifMessage(messageText) : null}
             <div className="md:w-3/4 w-full h-full min-h-50 flex flex-col gap-4 backdrop-blur-sm backdrop-brightness-50 border rounded-2xl p-4 border-white">
                 <div className="flex gap-2 justify-center">
                     <button 
