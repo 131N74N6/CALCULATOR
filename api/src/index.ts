@@ -26,8 +26,8 @@ app.use(cors({
     origin: [
         'http://localhost:6661', 
         'http://localhost:5173', 
-        'https://my-calculator-be.vercel.app/', 
-        'https://my-calculator-ten-omega.vercel.app/'
+        'https://my-calculator-be.vercel.app', 
+        'https://my-calculator-ten-omega.vercel.app'
     ]
 }));
 app.use('/api/auth', authRouters);
