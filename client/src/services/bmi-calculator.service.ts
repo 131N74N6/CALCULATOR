@@ -34,8 +34,13 @@ export default function BmiCalculatorServices() {
         mutationFn: async () => {
             return await deleteData(`${import.meta.env.VITE_BASE_API_URL}/bmi-calculator/rm-all/${currentUserId}`)
         },
-        onError: () => {},
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] }),
+        onError: (response) => {
+            setMessageText(response.message || 'Check your internet connection');
+        },
+        onSuccess: (response) => {
+            setMessageText(response.message);
+            queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] });
+        },
         onSettled: () => setIsProcessing(false)
     });
 
@@ -52,7 +57,9 @@ export default function BmiCalculatorServices() {
                 }
             });
         },
-        onError: () => {},
+        onError: (response) => {
+            setMessageText(response.message || 'Check your internet connection');
+        },
         onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: [`bmi-calculator-data-${currentUserId}`] });
             setLocalResult({

@@ -11,20 +11,11 @@ export default function BmiCalculatorLogs() {
     const { deleteAllFromHistory, deleteOneFromHistory, history, isProcessing, messageText, setMessageText } = BmiCalculatorServices();
     
     useEffect(() => {
-        if (deleteAllFromHistory.isError && deleteAllFromHistory.error) {
-            setMessageText(deleteAllFromHistory.error.message); 
-        }
-    }, [deleteAllFromHistory.isError, deleteAllFromHistory.error, setMessageText]);
-
-    useEffect(() => {
         if (messageText) {
-            const timer = setTimeout(() => {
-                setMessageText(null);
-                if (deleteAllFromHistory.isError) deleteAllFromHistory.reset();
-            }, 3000);
+            const timer = setTimeout(() => setMessageText(null), 3000);
             return () => clearTimeout(timer);
         }
-    }, [messageText, setMessageText, deleteAllFromHistory]);
+    }, [messageText, setMessageText]);
 
     return (
         <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>

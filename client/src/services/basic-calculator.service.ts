@@ -34,8 +34,13 @@ export default function BasicCalculatorServices() {
         mutationFn: async () => {
             return await deleteData(`${import.meta.env.VITE_BASE_API_URL}/basic-calculator/rm-all/${currentUserId}`)
         },
-        onError: () => {},
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] }),
+        onError: (response) => {
+            setMessageText(response.message || 'Check your internet connection');
+        },
+        onSuccess: (response) => {
+            setMessageText(response.message);
+            queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] });
+        },
         onSettled: () => setIsProcessing(false)
     });
 
@@ -51,7 +56,9 @@ export default function BasicCalculatorServices() {
                 }
             });
         },
-        onError: () => {},
+        onError: (response) => {
+            setMessageText(response.message || 'Check your internet connection');
+        },
         onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: [`basic-calculator-data-${currentUserId}`] });
             setLocalResult(response.result);

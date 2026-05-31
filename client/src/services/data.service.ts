@@ -24,11 +24,9 @@ export default function DataServices(pageName?: string) {
                 const errorMessage = response.message || 'Failed to change data. Try again later';
                 throw new Error(errorMessage);
             } else {
-                setMessageText(response.message);
-                await response;
+                return response;
             }
         } catch (error: any) {
-            setMessageText(error.message || 'Check Your Network Connection');
             throw error;
         }
     }
@@ -49,11 +47,9 @@ export default function DataServices(pageName?: string) {
                 const errorMessage = response.message || 'Failed to delete data. Try again later';
                 throw new Error(errorMessage);
             } else {
-                setMessageText(response.message);
-                await response;
+                return response;
             }
         } catch (error: any) {
-            setMessageText(error.message || 'Check your network connection');
             throw error;
         }
     }
@@ -77,11 +73,9 @@ export default function DataServices(pageName?: string) {
                         const errorMessage = response.message || 'Failed to get data. Try again later';
                         throw new Error(errorMessage);
                     } else {
-                        setMessageText(null);
                         return response;
                     }
                 } catch (error: any) {
-                    setMessageText(error.message || 'Check your network connection');
                     throw error;
                 }
             },
@@ -112,11 +106,9 @@ export default function DataServices(pageName?: string) {
                     const errorMessage = response.message || 'Failed to get data. Try again later';
                     throw new Error(errorMessage);
                 } else {
-                    setMessageText(null);
                     return response;
                 }
             } catch (error: any) {
-                setMessageText(error.message || 'Check your network connection');
                 throw error;
             }
         }
@@ -163,17 +155,14 @@ export default function DataServices(pageName?: string) {
                 throw new Error(errorMessage);
             } else {
                 if (pageName === 'basic-calculator') {
-                    setMessageText(null);
                     return response;
                 } else if (pageName === 'bmi-calculator') {
-                    setMessageText(null);
                     return response;
                 } else {
                     //
                 }
             }
         } catch (error: any) {
-            setMessageText(error.message || 'Check your network connection');
             throw error;
         }
     }

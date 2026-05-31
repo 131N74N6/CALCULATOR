@@ -19,6 +19,12 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
+db.then(res => {
+    if (res) console.log('database connected');
+}).catch(error => {
+    console.log('connection failed', error);
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -36,9 +42,7 @@ app.use('/api/bmi-calculator', bmiRouters);
 app.use('/api/user', userRoutes);
 
 if (process.env.NODE_ENV !== 'production') {
-    db.then(() => {
-        app.listen(6661, () => console.log('api running at http://localhost:6661'))
-    });
+    app.listen(6661, () => console.log('api running at http://localhost:6661'));
 }
 
 export default app;

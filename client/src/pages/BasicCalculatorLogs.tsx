@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Navbar1, Navbar2 } from "../components/Navbar";
 import BasicCalculatorServices from "../services/basic-calculator.service";
-import DataServices from "../services/data.service";
 import { useEffect } from "react";
 import NotifMessage from "../components/NotifMessage";
 import BasicCalculatorList from "../components/BasicCalculatorList";
@@ -9,24 +8,14 @@ import Loading from "../components/Loading";
 
 export default function BasicCalculatorLogs() {
     const navigate = useNavigate();
-    const { messageText, setMessageText } = DataServices('basic-calculator');
-    const { deleteAllFromHistory, deleteOneFromHistory, history, isProcessing } = BasicCalculatorServices();
-
-    useEffect(() => {
-        if (deleteAllFromHistory.isError && deleteAllFromHistory.error) {
-            setMessageText(deleteAllFromHistory.error.message); 
-        }
-    }, [deleteAllFromHistory.isError, deleteAllFromHistory.error, setMessageText]);
+    const { deleteAllFromHistory, deleteOneFromHistory, history, isProcessing, messageText, setMessageText } = BasicCalculatorServices();
 
     useEffect(() => {
         if (messageText) {
-            const timer = setTimeout(() => {
-                setMessageText(null);
-                if (deleteAllFromHistory.isError) deleteAllFromHistory.reset();
-            }, 3000);
+            const timer = setTimeout(() => setMessageText(null), 3000);
             return () => clearTimeout(timer);
         }
-    }, [messageText, setMessageText, deleteAllFromHistory]);
+    }, [messageText, setMessageText]);
     
     return (
         <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
