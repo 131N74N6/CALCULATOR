@@ -25,9 +25,9 @@ export async function signIn(req: Request, res: Response) {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            secure: process.env.NODE_ENV === 'production'
         });
 
         res.status(200).json({ user_id: userFound._id, username: userFound.username });
@@ -64,7 +64,7 @@ export async function logOut(_: Request, res: Response) {
     try {
         res.clearCookie('token', {
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             secure: process.env.NODE_ENV === 'production'
         });
 
