@@ -11,7 +11,6 @@ if (process.env.NODE_ENV !== 'production') {
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import { Request, Response, NextFunction } from 'express';
 import basicRouters from './routers/basic-calculator-router';
 import bmiRouters from './routers/bmi-calculator-router';
 import authRouters from './routers/auth-router';
@@ -20,14 +19,11 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-app.use(async (_: Request, __: Response, next: NextFunction) => {
-    mongoose.connect((`${process.env.MONGODB_URL}`))
-    .then(res => {
-        if (res) console.log('Database connection succeffully');
-    }).catch(err => {
-        console.log("Database connection check failed:", err);
-    });
-    next();
+mongoose.connect((`${process.env.MONGODB_URL}`))
+.then(res => {
+    if (res) console.log('Database connection succeffully');
+}).catch(err => {
+    console.log("Database connection check failed:", err);
 });
 
 app.use(express.json());
