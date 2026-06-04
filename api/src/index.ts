@@ -1,4 +1,4 @@
-import dns from 'node:dns/promises'
+import dns from 'node:dns/promises';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
+import { connection } from './mongodb/connection';
 import basicRouters from './routers/basic-calculator-router';
 import bmiRouters from './routers/bmi-calculator-router';
 import authRouters from './routers/auth-router';
@@ -18,13 +18,6 @@ import userRoutes from './routers/user-router';
 import cookieParser from 'cookie-parser';
 
 const app = express();
-
-mongoose.connect((`${process.env.MONGODB_URL}`))
-.then(res => {
-    if (res) console.log('Database connection succeffully');
-}).catch(err => {
-    console.log("Database connection check failed:", err);
-});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -43,7 +36,9 @@ app.use('/api/bmi-calculator', bmiRouters);
 app.use('/api/user', userRoutes);
 
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(6661, () => console.log('api running at http://localhost:6661'));
+    connection.then(() => {
+        app.listen(6661, () => console.log('api running at http://localhost:6661'));
+    });
 }
 
 export default app;
