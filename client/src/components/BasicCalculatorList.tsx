@@ -8,7 +8,7 @@ export default function BasicCalculatorList(props: BasicCalcListIntrf) {
             <div className="flex justify-center items-center h-full">
                 <span className="text-white font-medium text-5xl">No Logs...</span>
             </div>
-        )
+        );
     }
 
     return (
@@ -17,6 +17,7 @@ export default function BasicCalculatorList(props: BasicCalcListIntrf) {
                 {props.basic_calc_logs.map((basic_calc_log) => (
                     <BasicCalculatorItem 
                         basic_calc_log={basic_calc_log} 
+                        key={`basic-${basic_calc_log._id}`}
                         is_processing={props.is_processing}
                         on_delete={props.on_delete}
                     />

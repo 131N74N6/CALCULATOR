@@ -70,20 +70,21 @@ export default function Ipv4CalculatorServices() {
             setMessageText(response.message || 'Check your internet connection');
         },
         onSuccess: (response) => {
+            const result = response.ip_v4_stats;
             queryClient.invalidateQueries({ queryKey: [`ipv4-calculator-logs-${currentUserId}`] });
             setLocalResult({
-                ipv4: response.ipv4,
-                binary_ipv4: response.binary_ipv4,
-                net_mask: response.net_mask,
-                binary_net_mask: response.binary_net_mask,
-                network_ip: response.network_ip,
-                binary_network_ip: response.binary_network_ip,
-                first_host_ip: response.first_host_ip,
-                binary_first_host_ip: response.binary_first_host_ip,
-                last_host_ip: response.last_host_ip,
-                binary_last_host_ip: response.binary_last_host_ip,
-                broadcast_ip: response.broadcast_ip,
-                binary_broadcast_ip: response.binary_broadcast_ip
+                ipv4: result.ipv4,
+                binary_ipv4: result.binary_ipv4,
+                net_mask: result.net_mask,
+                binary_net_mask: result.binary_net_mask,
+                network_ip: result.network_ip,
+                binary_network_ip: result.binary_network_ip,
+                first_host_ip: result.first_host_ip,
+                binary_first_host_ip: result.binary_first_host_ip,
+                last_host_ip: result.last_host_ip,
+                binary_last_host_ip: result.binary_last_host_ip,
+                broadcast_ip: result.broadcast_ip,
+                binary_broadcast_ip: result.binary_broadcast_ip
             });
         },
         onSettled: () => setIsProcessing(false)
@@ -91,7 +92,7 @@ export default function Ipv4CalculatorServices() {
 
     const { error, fetchNextPage, isLoading, isLoadMore, isReachedEnd, paginatedData } = infiniteScroll<IpV4Intrf>({
         api_url: `${import.meta.env.VITE_BASE_API_URL}/ipv4-calculator/logs`,
-        limit: 16,
+        limit: 18,
         query_key: [`ipv4-calculator-logs-${currentUserId}`],
         stale_time: 1800000
     });
@@ -104,7 +105,19 @@ export default function Ipv4CalculatorServices() {
     }
 
     return { 
-        calculate, currentUserId, deleteAllFromHistory, deleteOneFromHistory, executeFormula, handleInput, ipV4, 
-        ipV4Logs, isProcessing, localResult, messageText, resetOperation, setLocalResult, setMessageText 
+        calculate, 
+        currentUserId, 
+        deleteAllFromHistory, 
+        deleteOneFromHistory, 
+        executeFormula, 
+        handleInput, 
+        ipV4, 
+        ipV4Logs, 
+        isProcessing, 
+        localResult, 
+        messageText, 
+        resetOperation, 
+        setLocalResult, 
+        setMessageText 
     }
 }

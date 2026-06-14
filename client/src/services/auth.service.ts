@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { SignInIntrf, SignUpIntrf, UserIntrf } from "../models/auth.model";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function AuthServices() {
     const navigate = useNavigate();
@@ -24,37 +24,43 @@ export default function AuthServices() {
             }
         },
         staleTime: Infinity, 
-        retry: false       // Jangan lakukan retry jika user memang belum login
+        retry: false
     });
 
     const currentUserId = authUser && authUser.user_id;
     const currentUserName = authUser && authUser.username;
 
-    async function signIn(props: SignInIntrf) {
-        setAuthError(null);
+    const signIn = useMutation({
+        mutationFn: async (props: SignInIntrf) => {
+            try {
+                const request = await fetch(`${import.meta.env.VITE_BASE_API_URL}/auth/sign-in`, {
+                    body: JSON.stringify(props),
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST'
+                });
 
-        try {
-            const request = await fetch(`${import.meta.env.VITE_BASE_API_URL}/auth/sign-in`, {
-                body: JSON.stringify(props),
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                method: 'POST'
-            });
+                const response = await request.json();
 
-            const response = await request.json();
-
-            if (!request.ok) {
-                const errorMessage = response.error || response.message || 'Failed to sign-in! Try again later';
-                throw new Error(errorMessage);
-            } else {
-                await queryClient.invalidateQueries({ queryKey: ['current-user'] });
-                setAuthError(null);
-                navigate('/basic-calculator');
-            }
-        } catch (error: any) {
-            setAuthError(error.message || 'Check your internet connection');
-        } 
-    }
+                if (!request.ok) {
+                    const errorMessage = response.error || response.message || 'Failed to sign-in! Try again later';
+                    throw new Error(errorMessage);
+                } else {
+                    await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+                    setAuthError(null);
+                }
+            } catch (error: any) {
+                throw error;
+            } 
+        },
+        onError: (error: any) => {
+            setAuthError(error.message || 'Failed to sign in. Check your internet connection.');
+        },
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['current-user'] });
+            navigate('/basic-calculator');
+        }
+    });
 
     async function signUp(props: SignUpIntrf) {
         setAuthError(null);

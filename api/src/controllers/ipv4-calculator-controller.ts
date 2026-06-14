@@ -24,7 +24,7 @@ export async function calculateIp(req: AuthRequest, res: Response) {
             return res.status(400).json({ message: 'all input fields are required' });
         }
 
-        if (ipComponent.every(ip => Number(ip) < 0 && Number(ip) > 255)) {
+        if (ipComponent.some(ip => Number(ip) < 0 || Number(ip) > 255)) {
             return res.status(400).json({ message: 'IpV4 value must be 0 - 255' });
         }
 
@@ -82,6 +82,21 @@ export async function calculateIp(req: AuthRequest, res: Response) {
             return res.status(400).json({ message: 'net mask must be 8, 16, or 24' });
         }
 
+        const ipV4Stats = {
+            ipv4: decimalIpV4,
+            binary_ipv4: binaryIpV4,
+            net_mask: net_mask,
+            binary_net_mask: binaryNetMask,
+            network_ip: networkIp,
+            binary_network_ip: binNetworkIp,
+            first_host_ip: firstHostIp,
+            binary_first_host_ip: binFirstHostIp,
+            last_host_ip: lastHostIp,
+            binary_last_host_ip: binLastHostIp,
+            broadcast_ip: broadcastIp,
+            binary_broadcast_ip: binBroadcastIp
+        }
+
         const newInsert = new IpV4({
             created_at: created_at,
             stats: {
@@ -113,21 +128,6 @@ export async function calculateIp(req: AuthRequest, res: Response) {
             user_id: req.user?.user_id
         });
         await newInsert.save();
-        
-        const ipV4Stats = {
-            ipv4: decimalIpV4,
-            binary_ipv4: binaryIpV4,
-            net_mask: net_mask,
-            binary_net_mask: binaryNetMask,
-            network_ip: networkIp,
-            binary_network_ip: binNetworkIp,
-            first_host_ip: firstHostIp,
-            binary_first_host_ip: binFirstHostIp,
-            last_host_ip: lastHostIp,
-            binary_last_host_ip: binLastHostIp,
-            broadcast_ip: broadcastIp,
-            binary_broadcast_ip: binBroadcastIp
-        }
 
         res.status(200).json({ ip_v4_stats: ipV4Stats });
     } catch (error) {
@@ -159,7 +159,7 @@ export async function deleteOneLog(req: Request, res: Response) {
 export async function getAllLogs(req: AuthRequest, res: Response) {
     try {
         const page = parseInt(req.query.page as string) || 1;
-        const limit = parseInt(req.query.limit as string) || 16;
+        const limit = parseInt(req.query.limit as string) || 18;
         const skip = (page - 1) * limit;
 
         const ipV4Logs = await IpV4.find({ user_id: req.user?.user_id }).limit(limit).skip(skip);

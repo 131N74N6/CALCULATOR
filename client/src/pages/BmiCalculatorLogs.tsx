@@ -27,7 +27,7 @@ export default function BmiCalculatorLogs() {
     return (
         <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
             {messageText ? NotifMessage(messageText) : null}
-            <div className="md:w-3/4 w-full h-full min-h-50 flex flex-col gap-4 backdrop-blur-sm backdrop-brightness-50 border rounded-2xl p-4 border-white">
+            <div className="md:w-3/4 w-full h-full min-h-50 flex flex-col gap-4 backdrop-blur-sm backdrop-brightness-50 border rounded-2xl pt-4 px-4 border-white">
                 <div className="flex gap-2 justify-center">
                     <button 
                         type="button"

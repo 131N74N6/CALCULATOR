@@ -42,13 +42,13 @@ export type IpV4ExecutorIntrf = {
     slot_4: string;
 }
 
-export type IpV4Item = {
+export type IpV4ItemIntrf = {
     ipv4_log: IpV4Intrf;
     is_processing: boolean;
     on_delete: UseMutationResult<void, Error, string, void>;
 }
 
-export type IpV4List = {
+export type IpV4ListIntrf = {
     ipv4_logs: IpV4Intrf[];
     fetch_next_page: (options?: FetchNextPageOptions | undefined) => Promise<InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>>;
     is_fetch_next_page: boolean;

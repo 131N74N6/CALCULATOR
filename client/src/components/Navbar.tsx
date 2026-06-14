@@ -1,4 +1,4 @@
-import { Calculator, PowerIcon, User, WeightIcon } from "lucide-react";
+import { Calculator, Network, PowerIcon, User, WeightIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom"
 import AuthServices from "../services/auth.service";
 
@@ -25,6 +25,15 @@ export function Navbar1(isProcessing: boolean) {
             >
                 <div><WeightIcon/></div>
                 <div>Bmi Calculator</div>
+            </button>
+            <button
+                type="button"
+                disabled={isProcessing}
+                onClick={() => navigate('/ipV4-calculator')}
+                className="cursor-pointer flex gap-2 disabled:cursor-not-allowed text-white font-medium text-[1rem]"
+            >
+                <div><Network/></div>
+                <div>IpV4 Calculator</div>
             </button>
             <button
                 type="button"
@@ -69,6 +78,14 @@ export function Navbar2(isProcessing: boolean) {
                 className="cursor-pointer disabled:cursor-not-allowed text-white font-medium text-[1rem]"
             >
                 <div><WeightIcon/></div>
+            </button>
+            <button
+                type="button"
+                disabled={isProcessing}
+                onClick={() => navigate('/ipV4-calculator')}
+                className="cursor-pointer flex gap-2 disabled:cursor-not-allowed text-white font-medium text-[1rem]"
+            >
+                <div><Network/></div>
             </button>
             <button
                 type="button"

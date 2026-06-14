@@ -90,36 +90,32 @@ export default function DataServices(pageName?: string) {
     }
     
     function infiniteScroll<T>(props: InfiniteScrollIntrf) {
-        async function fetchData({ pageParam = 1 }: { pageParam?: number }) {
-            try {
-                const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    method: 'GET'
-                });
-                
-                const response = await request.json();
-
-                if (!request.ok) {
-                    const errorMessage = response.message || 'Failed to get data. Try again later';
-                    throw new Error(errorMessage);
-                } else {
-                    return response;
-                }
-            } catch (error: any) {
-                throw error;
-            }
-        }
-
-        const { 
-            data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading 
-        } = useInfiniteQuery({
+        const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery({
             enabled: !!currentUserId && !authLoading,
             initialPageParam: 1,
             queryKey: props.query_key,
-            queryFn: fetchData,
+            queryFn: async ({ pageParam = 1 }: { pageParam?: number }) => {
+                try {
+                    const request = await fetch(`${props.api_url}?page=${pageParam}&limit=${props.limit}`, {
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        method: 'GET'
+                    });
+                    
+                    const response = await request.json();
+
+                    if (!request.ok) {
+                        const errorMessage = response.message || 'Failed to get data. Try again later';
+                        throw new Error(errorMessage);
+                    } else {
+                        return response;
+                    }
+                } catch (error: any) {
+                    throw error;
+                }
+            },
             getNextPageParam: (lastPage, allPages) => {
                 if (lastPage.length < props.limit) return;
                 return allPages.length + 1;

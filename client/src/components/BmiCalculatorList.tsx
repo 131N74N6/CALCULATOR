@@ -8,7 +8,7 @@ export default function BmiCalculatorList(props: BmiCalcListIntrf) {
             <div className="flex justify-center items-center h-full">
                 <span className="text-white font-medium text-5xl">No Logs...</span>
             </div>
-        )
+        );
     }
 
     return (
@@ -17,8 +17,8 @@ export default function BmiCalculatorList(props: BmiCalcListIntrf) {
                 {props.bmi_calc_logs.map((bmi_calc_log) => (
                     <BmiCalculatorItem 
                         bmi_calc_log={bmi_calc_log} 
+                        key={`bmi-${bmi_calc_log._id}`}
                         is_processing={props.is_processing}
-                        key={`bmi-logs-${bmi_calc_log._id}`}
                         on_delete={props.on_delete}
                     />
                 ))}

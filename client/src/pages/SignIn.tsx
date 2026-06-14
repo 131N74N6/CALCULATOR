@@ -24,7 +24,7 @@ export default function SignIn() {
 
     async function signInButton(event: React.SyntheticEvent<HTMLFormElement, SubmitEvent>) {
         event.preventDefault();
-        await signIn({ password: password.trim(), username: username.trim() });
+        await signIn.mutateAsync({ password: password.trim(), username: username.trim() });
     }
 
     const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -67,10 +67,10 @@ export default function SignIn() {
                 <p className="text-center text-gray-200">Don't have account? <Link className="text-blue-300" to={'/sign-up'}>Sign Up</Link></p>
                 <button 
                     type="submit" 
-                    disabled={authLoading}
+                    disabled={signIn.isPending}
                     className="bg-gray-200 rounded-md cursor-pointer text-gray-900 font-medium text-[0.9rem] p-[0.4rem] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-colors"
                 >
-                    {authLoading ? 'Processing' : 'Sign In'}
+                    {signIn.isPending ? 'Processing' : 'Sign In'}
                 </button>
                 {authError ? <p className="text-white font-medium text-center">{authError}</p> : null}
             </form>

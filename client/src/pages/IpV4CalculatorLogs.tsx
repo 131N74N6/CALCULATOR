@@ -1,29 +1,29 @@
 import { useNavigate } from "react-router-dom";
+import IpV4CalculatorList from "../components/IpV4CalculatorList";
 import { Navbar1, Navbar2 } from "../components/Navbar";
-import BasicCalculatorServices from "../services/basic-calculator.service";
+import Ipv4CalculatorServices from "../services/ipv4-calculator.service";
 import { useEffect } from "react";
 import NotifMessage from "../components/NotifMessage";
-import BasicCalculatorList from "../components/BasicCalculatorList";
 import Loading from "../components/Loading";
 
-export default function BasicCalculatorLogs() {
+export default function IpV4CalculatorLogs() {
     const navigate = useNavigate();
-    const { 
-        deleteAllFromHistory, 
-        deleteOneFromHistory, 
-        history, 
+    const {  
+        deleteAllFromHistory,
+        deleteOneFromHistory,
+        ipV4Logs,
         isProcessing, 
         messageText, 
         setMessageText 
-    } = BasicCalculatorServices();
-
+    } = Ipv4CalculatorServices();
+    
     useEffect(() => {
         if (messageText) {
             const timer = setTimeout(() => setMessageText(null), 3000);
             return () => clearTimeout(timer);
         }
     }, [messageText, setMessageText]);
-    
+
     return (
         <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
             {messageText ? NotifMessage(messageText) : null}
@@ -33,30 +33,34 @@ export default function BasicCalculatorLogs() {
                         type="button"
                         onClick={() => deleteAllFromHistory.mutate()}
                         disabled={isProcessing}
-                        className="cursor-pointer disabled:cursor-not-allowed bg-white text-orange-700 w-20 font-medium p-[0.4rem] text-[0.85rem] rounded-[0.3rem]"
+                        className="cursor-pointer disabled:cursor-not-allowed bg-white text-blue-500 w-20 font-medium p-[0.4rem] text-[0.85rem] rounded-[0.3rem]"
                     >
                         Delete All
                     </button>
                     <button 
                         type="button"
                         disabled={isProcessing}
-                        onClick={() => navigate('/basic-calculator')}
-                        className="cursor-pointer disabled:cursor-not-allowed bg-white text-orange-700 w-20 font-medium p-[0.4rem] text-[0.85rem] rounded-[0.3rem]"
+                        onClick={() => navigate('/ipv4-calculator')}
+                        className="cursor-pointer disabled:cursor-not-allowed bg-white text-blue-500 w-20 font-medium p-[0.4rem] text-[0.85rem] rounded-[0.3rem]"
                     >
                         Back
                     </button>
                 </div>
-                {history.isLoading ? (
-                    <div className="flex h-full justify-center items-center"><Loading/></div>
-                ) : history.error ? (
-                    <div className="flex h-full justify-center items-center">{history.error.message}</div>
+                {ipV4Logs.isLoading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <Loading/>
+                    </div>
+                ) : ipV4Logs.error ? (
+                    <div className="flex justify-center items-center h-full">
+                        <span className="font-medium text-5xl text-white">{ipV4Logs.error.message}</span>
+                    </div>
                 ) : (
-                    <BasicCalculatorList 
-                        basic_calc_logs={history.paginatedData} 
-                        fetch_next_page={history.fetchNextPage}
-                        is_fetch_next_page={history.isLoadMore}
-                        is_reached_end={history.isReachedEnd}
-                        is_processing={isProcessing} 
+                    <IpV4CalculatorList
+                        ipv4_logs={ipV4Logs.paginatedData}
+                        fetch_next_page={ipV4Logs.fetchNextPage}
+                        is_fetch_next_page={ipV4Logs.isLoadMore}
+                        is_reached_end={ipV4Logs.isReachedEnd}
+                        is_processing={isProcessing}
                         on_delete={deleteOneFromHistory}
                     />
                 )}
