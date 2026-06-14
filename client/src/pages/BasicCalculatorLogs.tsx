@@ -8,7 +8,14 @@ import Loading from "../components/Loading";
 
 export default function BasicCalculatorLogs() {
     const navigate = useNavigate();
-    const { deleteAllFromHistory, deleteOneFromHistory, history, isProcessing, messageText, setMessageText } = BasicCalculatorServices();
+    const { 
+        deleteAllFromHistory, 
+        deleteOneFromHistory, 
+        history, 
+        isProcessing, 
+        messageText, 
+        setMessageText 
+    } = BasicCalculatorServices();
 
     useEffect(() => {
         if (messageText) {
@@ -18,7 +25,7 @@ export default function BasicCalculatorLogs() {
     }, [messageText, setMessageText]);
     
     return (
-        <div className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
+        <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
             {messageText ? NotifMessage(messageText) : null}
             <div className="md:w-3/4 w-full h-full min-h-50 flex flex-col gap-4 backdrop-blur-sm backdrop-brightness-50 border rounded-2xl p-4 border-white">
                 <div className="flex gap-2 justify-center">
@@ -56,6 +63,6 @@ export default function BasicCalculatorLogs() {
             </div>
             {Navbar1(isProcessing)}
             {Navbar2(isProcessing)}
-        </div>
+        </section>
     );
 }

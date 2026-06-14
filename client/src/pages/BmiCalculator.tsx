@@ -7,7 +7,14 @@ import { useNavigate } from "react-router-dom";
 export default function BmiCalculator() {
     const navigate = useNavigate();
     const { currentUserId } = AuthServices();
-    const { executeFormula, isProcessing, localResult, messageText, setLocalResult, setMessageText } = BmiCalculatorServices();
+    const { 
+        executeFormula, 
+        isProcessing, 
+        localResult, 
+        messageText, 
+        setLocalResult, 
+        setMessageText 
+    } = BmiCalculatorServices();
 
     const [weight, setWeight] = useState<string>('');
     const [height, setHeight] = useState<string>('');
@@ -92,7 +99,7 @@ export default function BmiCalculator() {
                                 Logs
                             </button>
                         </div>
-                        <div className="bmi-result ml-4 flex items-center">
+                        <div className="ml-4 flex items-center">
                             {messageText ? (
                                 <div className="border border-white text-white outline-0 p-2 text-[0.9rem] font-[450]">
                                     {messageText}

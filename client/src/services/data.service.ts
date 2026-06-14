@@ -158,6 +158,8 @@ export default function DataServices(pageName?: string) {
                     return response;
                 } else if (pageName === 'bmi-calculator') {
                     return response;
+                } else if (pageName === 'ipv4-calculator') {
+                    return response;
                 } else {
                     //
                 }

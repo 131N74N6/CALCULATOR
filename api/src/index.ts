@@ -14,8 +14,9 @@ import { connection } from './mongodb/connection';
 import basicRouters from './routers/basic-calculator-router';
 import bmiRouters from './routers/bmi-calculator-router';
 import authRouters from './routers/auth-router';
-import userRoutes from './routers/user-router';
+import userRouters from './routers/user-router';
 import cookieParser from 'cookie-parser';
+import ipV4Routers from './routers/ipv4-calculator-router';
 
 const app = express();
 
@@ -33,7 +34,8 @@ app.use(cors({
 app.use('/api/auth', authRouters);
 app.use('/api/basic-calculator', basicRouters);
 app.use('/api/bmi-calculator', bmiRouters);
-app.use('/api/user', userRoutes);
+app.use('/api/ipv4-calculator', ipV4Routers);
+app.use('/api/user', userRouters);
 
 if (process.env.NODE_ENV !== 'production') {
     connection.then(() => {

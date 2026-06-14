@@ -6,7 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function BasicCalculator() {
     const { currentUserId } = AuthServices();
-    const { executeFormula, isProcessing, localResult, setMessageText, setLocalResult, messageText } = BasicCalculatorServices();
+    const { 
+        executeFormula, 
+        isProcessing, 
+        localResult, 
+        setMessageText, 
+        setLocalResult, 
+        messageText 
+    } = BasicCalculatorServices();
 
     const navigate = useNavigate();
     const buttonComponent = ['0','1','2','3','4','5','6','7','8','9','C','+','-','*','/','(',')','.','^'];
@@ -43,7 +50,7 @@ export default function BasicCalculator() {
     }, [currentUserId]);
 
     return (
-        <main className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
+        <section className='bg-[url(https://wallpaperaccess.com/full/1812965.jpg)] md:flex-row flex-col flex gap-4 p-4 h-screen relative z-10'>
             <div className="border-white md:w-3/4 w-full h-full flex flex-col gap-4 backdrop-blur-sm border rounded-2xl p-4 backdrop-brightness-50">
                 <div className="flex gap-2 justify-center">
                     <button 
@@ -91,6 +98,6 @@ export default function BasicCalculator() {
             </div>
             {Navbar1(isProcessing)}
             {Navbar2(isProcessing)}
-        </main>
+        </section>
     );
 }

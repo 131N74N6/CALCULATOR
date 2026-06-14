@@ -8,6 +8,7 @@ import BmiCalculator from "./pages/BmiCalculator";
 import Profile from "./pages/Profile";
 import BasicCalculatorLogs from "./pages/BasicCalculatorLogs";
 import BmiCalculatorLogs from "./pages/BmiCalculatorLogs";
+import IpV4Calculator from "./pages/IpV4Calculator";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ export default function App() {
                     <Route path="/bmi-calculator-logs" element={<ProtectedRoute><BmiCalculatorLogs/></ProtectedRoute>}/>
                     <Route path="/basic-calculator" element={<ProtectedRoute><BasicCalculator/></ProtectedRoute>}/>
                     <Route path="/basic-calculator-logs" element={<ProtectedRoute><BasicCalculatorLogs/></ProtectedRoute>}/>
+                    <Route path="/ipv4-calculator" element={<ProtectedRoute><IpV4Calculator/></ProtectedRoute>}/>
                     <Route path="/profile" element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
                     <Route path="/" element={<Navigate to="/basic-calculator" replace/>}/>
                     <Route path="*" element={<Navigate to="/sign-in" replace/>}/>
